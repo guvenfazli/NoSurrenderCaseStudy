@@ -14,7 +14,9 @@
 }
 
 @theme {
-  --font-case-font: "Bricolage Grotesque", sans-serif
+  --font-case-font: "Bricolage Grotesque", sans-serif;
+  --color-activeNav: #F4BC79;
+  --color-navButtonColor: #000A2E;
 }
 
 @media (prefers-color-scheme: dark) {

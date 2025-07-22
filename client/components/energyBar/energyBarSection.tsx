@@ -5,12 +5,12 @@ import { useState } from "react"
 
 export default function EnergyBarSection() {
 
-  const [energy, setEnergy] = useState(75)
+  const [energy, setEnergy] = useState(95)
 
   return (
-    <>
+    <div>
       <TimerSection />
       <ProgressBar energy={energy} />
-    </>
+    </div>
   )
 }
