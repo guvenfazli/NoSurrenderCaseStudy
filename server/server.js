@@ -46,7 +46,6 @@ async function createRedis() {
 createRedis()
 
 // ROUTES
-
 app.use('/', itemRoutes)
 app.use('/energy', energyRoutes)
 

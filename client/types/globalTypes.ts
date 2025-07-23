@@ -10,7 +10,5 @@ export type ItemList = {
   itemList: ItemType[]
 }
 
-export type Energy = {
-  energy: number
-}
+export type Energy = number
 

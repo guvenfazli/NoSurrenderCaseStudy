@@ -1,10 +1,11 @@
 import example from "../../assets/uzunKilic1.png"
 import UpdateButton from "./updateButton"
 import UpgradeButton from "./upgradeButton"
-import { ItemType } from "@/types/globalTypes"
+import { ItemType, ItemList } from "@/types/globalTypes"
 
 interface ComponentProps {
   item: ItemType
+  setItemList: React.Dispatch<React.SetStateAction<ItemType[]>>
 }
 
 const cardBackgrounds: Record<number, string> = {
@@ -12,7 +13,7 @@ const cardBackgrounds: Record<number, string> = {
   2: "shadow-[0_0_5px_0px_#73FF61]",
   3: "shadow-[0_0_5px_0px_#E5B24D]"
 }
-export default function ItemCard({ item }: ComponentProps) {
+export default function ItemCard({ item, setItemList }: ComponentProps) {
   return (
     <div className={`h-[139px] flex flex-col justify-between col-span-1 relative py-2 px-1 bg-cover rounded-lg ${cardBackgrounds[item.itemLevel]}`} style={{ backgroundImage: `url(${example.src})` }}>
       <div className="flex px-2 justify-end"> {/* Item Level */}
@@ -29,7 +30,7 @@ export default function ItemCard({ item }: ComponentProps) {
             </div>
             <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[9px] text-white font-medium">{item.levelStatus}%</span>
           </div>
-          {item.levelStatus === 100 ? <UpdateButton /> : <UpgradeButton />}
+          {item.levelStatus === 100 ? <UpdateButton /> : <UpgradeButton setItemList={setItemList} />}
         </div>
       </div>
     </div>

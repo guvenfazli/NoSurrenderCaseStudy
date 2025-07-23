@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
-export default function useFetchData<T>(url: string) {
+import { useState, useEffect, useContext } from "react";
+import { EnergyContext } from "@/store/energyContext";
+export default function useEnergyController<T>(url: string) {
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [isError, setIsError] = useState<string | boolean>(false)
-  const [data, setData] = useState<T | null>(null)
+  const { energy, setEnergy } = useContext(EnergyContext)
 
   useEffect(() => {
     async function fetchData() {
@@ -19,8 +20,8 @@ export default function useFetchData<T>(url: string) {
         }
 
         const resData = await response.json()
-
-        setData(resData)
+  
+        setEnergy(resData.energy)
         setIsLoading(false)
       } catch (err: unknown) {
         const error = err as { message: string, status: number }
@@ -31,5 +32,5 @@ export default function useFetchData<T>(url: string) {
     fetchData()
   }, [url])
 
-  return { isLoading, isError, data, setData }
+  return { isLoading, isError, energy }
 }

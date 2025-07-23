@@ -2,21 +2,38 @@ import Image from "next/image"
 import energyIcon from "../../assets/energyPng.png"
 import { useEffect, useContext, useState } from "react"
 import { EnergyContext } from "@/store/energyContext"
-interface ComponentProps {
-  energy: number
-}
 
-export default function TimerSection({ energy }: ComponentProps) {
 
-  const { energy: contextEnergy, setEnergy } = useContext(EnergyContext)
-  const [timer, setTimer] = useState(120)
+export default function TimerSection() {
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL
+  const { energy, setEnergy } = useContext(EnergyContext)
+  const [timer, setTimer] = useState(3)
+
+  async function updateEnergy() {
+    const response = await fetch(`${BASE_URL}/energy/updateEnergy`, {
+      credentials: "include",
+      method: "PATCH",
+      body: JSON.stringify({ energy }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    const resData = await response.json()
+
+    if (resData.energy >= 100) {
+      return true
+    } else {
+      setEnergy(resData.energy)
+      return false
+    }
+  }
+
 
   useEffect(() => {
-    setEnergy(energy)
 
-    const timer = setInterval(() => {
+    const interval = setInterval(() => {
       setTimer(((prev) => {
-        if(prev === 0){
+        if (prev < 1) {
           return 120
         } else {
           return prev -= 1
@@ -24,10 +41,17 @@ export default function TimerSection({ energy }: ComponentProps) {
       }))
     }, 1000)
 
-    return () => {
-      clearInterval(timer)
+    if (timer === 0) {
+      updateEnergy()
     }
-  }, [])
+
+    return () => {
+      clearInterval(interval)
+    }
+  }, [timer])
+
+
+
 
 
 
