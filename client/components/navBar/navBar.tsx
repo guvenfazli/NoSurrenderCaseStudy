@@ -7,9 +7,9 @@ export default function NavBar() {
         }}>
         Tüm Seviyeler
       </button>
-      <button className="text-[10px] rounded-full px-2 py-1 font-bold opacity-30 cursor-pointer">Sv1</button>
-      <button className="text-[10px] rounded-full px-2 py-1 font-bold opacity-30 cursor-pointer">Sv2</button>
-      <button className="text-[10px] rounded-full px-2 py-1 font-bold opacity-30 cursor-pointer">Max Sv</button>
+      <button className="text-[10px] rounded-full px-2 py-1 font-bold opacity-30 cursor-pointer hover:opacity-100 duration-150">Sv1</button>
+      <button className="text-[10px] rounded-full px-2 py-1 font-bold opacity-30 cursor-pointer hover:opacity-100 duration-150">Sv2</button>
+      <button className="text-[10px] rounded-full px-2 py-1 font-bold opacity-30 cursor-pointer hover:opacity-100 duration-150">Max Sv</button>
     </div>
   )
 }
