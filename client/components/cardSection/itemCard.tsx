@@ -3,7 +3,6 @@ import UpdateButton from "./updateButton"
 import UpgradeButton from "./upgradeButton"
 export default function ItemCard() {
   return (
-
     <div className="h-[139px] flex flex-col justify-between col-span-1 relative py-2 px-1 bg-cover rounded-lg shadow-[0_0_5px_0px_white]" style={{ backgroundImage: `url(${example.src})` }}>
       <div className="flex px-2 justify-end"> {/* Item Level */}
         <p className="text-[9px] font-semibold">Level 1</p>
@@ -19,8 +18,6 @@ export default function ItemCard() {
             </div>
             <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[9px] text-white font-medium">100%</span>
           </div>
-
-
           <UpgradeButton />
         </div>
       </div>
