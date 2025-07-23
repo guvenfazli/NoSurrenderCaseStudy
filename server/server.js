@@ -40,6 +40,7 @@ app.use((req, res, next) => { // Header Options
 async function createRedis() {
   redisClient.on('error', err => console.log('Redis Client Error', err))
   await redisClient.connect()
+  console.log('Redis connection established.')
 }
 
 createRedis()
