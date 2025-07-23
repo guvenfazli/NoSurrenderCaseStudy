@@ -3,6 +3,10 @@ const app = express()
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const cors = require('cors')
+const redisClient = require('./utils/redis')
+
+
+
 
 // ROUTES
 const itemRoutes = require('./routes/itemRoutes')
@@ -29,6 +33,16 @@ app.use((req, res, next) => { // Header Options
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
   next();
 })
+
+
+// REDIS SETUP
+
+async function createRedis() {
+  redisClient.on('error', err => console.log('Redis Client Error', err))
+  await redisClient.connect()
+}
+
+createRedis()
 
 // ROUTES
 

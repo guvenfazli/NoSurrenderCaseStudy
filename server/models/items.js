@@ -11,6 +11,11 @@ const itemSchema = new Schema({
     required: true,
     default: 1
   },
+  levelStatus: {
+    type: Number,
+    required: true,
+    default: 0
+  },
   itemSpecs: {
     1: {
       name: { type: String, required: true },

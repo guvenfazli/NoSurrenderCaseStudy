@@ -1,16 +1,20 @@
+import { useState } from "react"
 import ItemCard from "./itemCard"
+import { ItemType } from "@/types/globalTypes"
 
-export default function ItemMenu() {
+interface ComponentProps {
+  data: ItemType[]
+}
+
+export default function ItemMenu({ data }: ComponentProps) {
+
+  const [itemList, setItemList] = useState<ItemType[]>(data)
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
-      <ItemCard />
-      <ItemCard />
-      <ItemCard />
-      <ItemCard />
-      <ItemCard />
-      <ItemCard />
-      <ItemCard />
-      <ItemCard />
+    <div className="grid grid-cols-2 gap-4 w-full">
+      {itemList.map((item: ItemType) => (
+        <ItemCard key={item._id} item={item} />
+      ))}
     </div>
   )
 }
