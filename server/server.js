@@ -4,6 +4,14 @@ const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 
+// ROUTES
+const itemRoutes = require('./routes/itemRoutes')
+
+
+// MODELS
+const Item = require('./models/items')
+
+
 // .env
 const dotenv = require('dotenv')
 dotenv.config({ path: './.env' });
@@ -22,10 +30,13 @@ app.use((req, res, next) => { // Header Options
   next();
 })
 
+// ROUTES
 
+app.use('/', itemRoutes)
 
 // CONNECTION
 mongoose.connect(`${process.env.DB_CONNECTION}`).then((res) => {
   app.listen(process.env.PORT)
   console.log("Server is running!")
 }).catch(err => console.log(err))
+
