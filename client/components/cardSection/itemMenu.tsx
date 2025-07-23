@@ -1,7 +1,6 @@
 import { useState } from "react"
 import ItemCard from "./itemCard"
 import { ItemType } from "@/types/globalTypes"
-
 interface ComponentProps {
   data: ItemType[]
 }
@@ -12,7 +11,7 @@ export default function ItemMenu({ data }: ComponentProps) {
 
   return (
     <div className="grid grid-cols-2 gap-4 w-full">
-      {itemList.map((item: ItemType) => (
+      {itemList.length === 0 ? <p>No item found.</p> :itemList.map((item: ItemType) => (
         <ItemCard key={item._id} item={item} />
       ))}
     </div>

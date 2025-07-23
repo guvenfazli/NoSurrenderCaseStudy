@@ -10,11 +10,11 @@ const redisClient = require('./utils/redis')
 
 // ROUTES
 const itemRoutes = require('./routes/itemRoutes')
-
+const energyRoutes = require('./routes/energyRoutes')
 
 // MODELS
 const Item = require('./models/items')
-
+const Energy = require('./models/energy')
 
 // .env
 const dotenv = require('dotenv')
@@ -48,6 +48,15 @@ createRedis()
 // ROUTES
 
 app.use('/', itemRoutes)
+app.use('/energy', energyRoutes)
+
+
+// Error Middleware
+app.use((error, req, res, next) => {
+  const message = error.message
+  const statusCode = error.statusCode || 500
+  res.status(statusCode).json({ message, statusCode })
+})
 
 // CONNECTION
 mongoose.connect(`${process.env.DB_CONNECTION}`).then((res) => {

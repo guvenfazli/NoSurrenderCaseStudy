@@ -9,3 +9,8 @@ export type ItemType = {
 export type ItemList = {
   itemList: ItemType[]
 }
+
+export type Energy = {
+  energy: number
+}
+

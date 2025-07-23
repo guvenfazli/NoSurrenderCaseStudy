@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Bricolage_Grotesque } from "next/font/google";
 import "./globals.css";
-
+import { Toaster } from "@/components/ui/sonner";
+import EnergyContextProvider from "@/store/energyContext";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -27,9 +28,12 @@ export default function RootLayout({
       <body
         className={`antialiased ${geistMono}`}
       >
-        <div className="w-full max-w-[390px] p-4 min-h-screen bg-gradient-to-b from-[#111118] to-[#353345] text-white">
-          {children}
-        </div>
+        <EnergyContextProvider>
+          <div className="w-full max-w-[390px] p-4 min-h-screen bg-gradient-to-b from-[#111118] to-[#353345] text-white">
+            {children}
+          </div>
+          <Toaster richColors/>
+        </EnergyContextProvider>
       </body>
     </html>
   );

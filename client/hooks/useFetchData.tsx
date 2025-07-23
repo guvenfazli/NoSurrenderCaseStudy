@@ -23,8 +23,8 @@ export default function useFetchData<T>(url: string) {
         setData(resData)
         setIsLoading(false)
       } catch (err: unknown) {
-        const error = err as { detail: string, status: number }
-        setIsError(error.detail)
+        const error = err as { message: string, status: number }
+        setIsError(error.message)
       }
     }
 

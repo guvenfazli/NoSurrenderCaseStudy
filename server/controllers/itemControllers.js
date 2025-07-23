@@ -8,11 +8,16 @@ exports.getItems = async (req, res, next) => {
       res.status(200).json({ itemList })
       return;
     }
+
     const itemList = await Item.find({})
-    await redisClient.set(`itemList`, JSON.stringify(itemList), { EX: 5 * 60 })
+
+    await redisClient.set(`itemList`, JSON.stringify(itemList), { expiration: { type: 'EX', value: 5 * 60 } })
+
     res.status(200).json({ itemList })
+
     return;
+
   } catch (err) {
-    console.log(err)
+    next(err)
   }
 }
