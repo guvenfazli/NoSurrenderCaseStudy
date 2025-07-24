@@ -4,7 +4,6 @@ import { EnergyContext } from "@/store/energyContext"
 export default function ProgressBar() {
 
   const { energy } = useContext(EnergyContext)
-  console.log(energy)
 
   return (
     <div className="relative w-full">

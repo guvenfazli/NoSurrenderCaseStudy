@@ -7,7 +7,7 @@ import { EnergyContext } from "@/store/energyContext"
 export default function TimerSection() {
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL
   const { energy, setEnergy } = useContext(EnergyContext)
-  const [timer, setTimer] = useState(3)
+  const [timer, setTimer] = useState(120)
 
   async function updateEnergy() {
     const response = await fetch(`${BASE_URL}/energy/updateEnergy`, {
