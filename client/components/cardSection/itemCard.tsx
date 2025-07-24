@@ -1,5 +1,4 @@
 import { useState, useContext } from "react"
-import example from "../../assets/uzunKilic1.png"
 import UpdateButton from "./updateButton"
 import UpgradeButton from "./upgradeButton"
 import DirectUpdateButton from "./directUpdateButton"
@@ -23,7 +22,8 @@ export default function ItemCard({ item }: ComponentProps) {
   const { energy } = useContext(EnergyContext)
 
   return (
-    <div className={`h-[139px] flex flex-col justify-between col-span-1 relative py-2 px-1 bg-cover rounded-lg ${cardBackgrounds[level]}`} style={{ backgroundImage: `url(${example.src})` }}>
+    <div className={`h-[139px] flex flex-col justify-between col-span-1 relative py-2 px-1 bg-cover rounded-lg ${cardBackgrounds[level]}`} 
+    style={{ backgroundImage: `url(${item.itemSpecs[level].imageUrl}.png)` }}>
       <div className="flex px-2 justify-end"> {/* Item Level */}
         <p className="text-[9px] font-semibold">Level {level}</p>
       </div>
