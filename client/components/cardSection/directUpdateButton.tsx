@@ -6,10 +6,11 @@ import { EnergyContext } from "@/store/energyContext"
 interface ComponentProps {
   setProgress: React.Dispatch<React.SetStateAction<number>>
   setLevel: React.Dispatch<React.SetStateAction<number>>
+  requiredEnergy: number
   id: string
 }
 
-export default function DirectUpdateButton({ setProgress, setLevel, id }: ComponentProps) {
+export default function DirectUpdateButton({ setProgress, setLevel, id, requiredEnergy }: ComponentProps) {
 
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL
   const { energy, setEnergy } = useContext(EnergyContext)
@@ -19,7 +20,7 @@ export default function DirectUpdateButton({ setProgress, setLevel, id }: Compon
     const response = await fetch(`${BASE_URL}/instant-level`, {
       credentials: 'include',
       method: 'PATCH',
-      body: JSON.stringify({ cardId: id }),
+      body: JSON.stringify({ cardId: id, requiredEnergy }),
       headers: {
         'Content-Type': 'application/json'
       }
@@ -45,7 +46,7 @@ export default function DirectUpdateButton({ setProgress, setLevel, id }: Compon
         alt="icon"
         className="w-3 h-3"
       />
-      <span className="font-semibold text-[#EE39A8]">-50</span> Hızlı Yükselt
+      <span className="font-semibold text-[#EE39A8]">-{requiredEnergy}</span> Hızlı Yükselt
     </button>
   )
 }

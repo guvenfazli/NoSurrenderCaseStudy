@@ -39,16 +39,11 @@ exports.upgradeLevelStatus = async (req, res, next) => {
       await redisClient.set(`itemList/:userId`, JSON.stringify(itemList), { expiration: { type: 'EX', value: 5 * 60 } })
       await redisClient.set(`isActive/:userId`, 'true', { expiration: { type: 'EX', value: 1 * 60 } })
 
-      if (isActive) {
-        clearTimeout(timer)
-        timer = setTimeout(() => {
-          console.log('test')
-        }, 5000)
-      } else {
-        timer = setTimeout(() => {
-          console.log('test')
-        }, 5000)
-      }
+      if (isActive) clearTimeout(timer)
+
+      timer = setTimeout(() => {
+        console.log('test')
+      }, 5000)
 
       res.status(200).json({ progress: foundItem.levelStatus, energy: updatedEnergy })
       return;
@@ -115,13 +110,13 @@ exports.updateLevel = async (req, res, next) => {
 }
 
 exports.instantLevel = async (req, res, next) => {
-  const { cardId } = req.body
+  const { cardId, requiredEnergy } = req.body
 
   try {
     const cachedItems = await redisClient.get(`itemList/:userId`)
-    const cachedEnergy = await instantEnergy()
+    const cachedEnergy = await instantEnergy(requiredEnergy)
 
-    if (cachedItems) { 
+    if (cachedItems) {
       const itemList = JSON.parse(cachedItems)
       const foundItem = itemList.find((item) => item._id === cardId)
       if (foundItem.itemLevel !== 3) {
@@ -142,8 +137,8 @@ exports.instantLevel = async (req, res, next) => {
       foundItem.levelStatus = 0
     }
 
-    await foundItem.save() 
-    await redisClient.set(`itemList/:userId`, JSON.stringify(itemList), { expiration: { type: 'EX', value: 5 * 60 } })  
+    await foundItem.save()
+    await redisClient.set(`itemList/:userId`, JSON.stringify(itemList), { expiration: { type: 'EX', value: 5 * 60 } })
 
     res.status(200).json({ level: foundItem.itemLevel, progress: 0, energy: cachedEnergy })
   } catch (err) {

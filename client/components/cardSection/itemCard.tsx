@@ -7,6 +7,7 @@ import { EnergyContext } from "@/store/energyContext"
 interface ComponentProps {
   item: ItemType
   setItemList: React.Dispatch<React.SetStateAction<ItemType[]>>
+
 }
 
 const cardBackgrounds: Record<number, string> = {
@@ -22,8 +23,8 @@ export default function ItemCard({ item }: ComponentProps) {
   const { energy } = useContext(EnergyContext)
 
   return (
-    <div className={`h-[139px] flex flex-col justify-between col-span-1 relative py-2 px-1 bg-cover rounded-lg ${cardBackgrounds[level]}`} 
-    style={{ backgroundImage: `url(${item.itemSpecs[level].imageUrl}.png)` }}>
+    <div className={`h-[139px] flex flex-col justify-between col-span-1 relative py-2 px-1 bg-cover rounded-lg ${cardBackgrounds[level]}`}
+      style={{ backgroundImage: `url(${item.itemSpecs[level].imageUrl}.png)` }}>
       <div className="flex px-2 justify-end"> {/* Item Level */}
         <p className="text-[9px] font-semibold">Level {level}</p>
       </div>
@@ -43,7 +44,7 @@ export default function ItemCard({ item }: ComponentProps) {
             {progress === 100 ? <UpdateButton setProgress={setProgress} setLevel={setLevel} id={item._id} /> : <UpgradeButton setProgress={setProgress} id={item._id} />}
           </div>
 
-          {energy >= 50 && <DirectUpdateButton setProgress={setProgress} setLevel={setLevel} id={item._id} />}
+          {energy >= 50 - (progress / 2) && <DirectUpdateButton setProgress={setProgress} setLevel={setLevel} id={item._id} requiredEnergy={50 - (progress / 2)} />}
         </div>
       </div>
     </div>
