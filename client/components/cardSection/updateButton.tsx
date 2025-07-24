@@ -1,4 +1,3 @@
-import { ItemType } from "@/types/globalTypes"
 interface ComponentProps {
   setProgress: React.Dispatch<React.SetStateAction<number>>
   setLevel: React.Dispatch<React.SetStateAction<number>>
@@ -19,7 +18,7 @@ export default function UpdateButton({ setProgress, setLevel, id }: ComponentPro
     })
 
     const resData = await response.json()
-    console.log(resData)
+
     setProgress(resData.progress)
     setLevel(resData.level)
   }

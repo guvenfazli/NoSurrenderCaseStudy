@@ -15,7 +15,6 @@ exports.getItems = async (req, res, next) => {
     await redisClient.set(`itemList`, JSON.stringify(itemList), { expiration: { type: 'EX', value: 5 * 60 } })
     res.status(200).json({ itemList })
     return;
-
   } catch (err) {
     next(err)
   }
@@ -25,14 +24,8 @@ exports.upgradeLevelStatus = async (req, res, next) => {
   const { cardId } = req.body
 
   try {
-    const updatedEnergy = await energyCheck() // Energy Handler, if it is below 2, throws error, if not, updates the cache or sets the cache for further usage.
+    const updatedEnergy = await energyCheck() // Energy Handler, if it is below 1, throws error, if not, updates the cache or sets the cache for further usage.
     const cachedItems = await redisClient.get(`itemList`)
-
-    if (!updatedEnergy) {
-      const error = new Error()
-      error.message = "You do not have enough energy!"
-      throw error
-    }
 
     if (cachedItems) { // Updates the cache if the items are already have been cached.
       const itemList = JSON.parse(cachedItems)

@@ -2,7 +2,7 @@ import energyIcon from "../../assets/energyPng.png"
 import Image from "next/image"
 import { useContext } from "react"
 import { EnergyContext } from "@/store/energyContext"
-import { ItemType } from "@/types/globalTypes"
+import { toast } from "sonner"
 interface ComponentProps {
   setProgress: React.Dispatch<React.SetStateAction<number>>
   id: string
@@ -13,20 +13,40 @@ export default function UpgradeButton({ setProgress, id }: ComponentProps) {
   const { energy, setEnergy } = useContext(EnergyContext)
 
   async function upgradeItem() {
+    if (energy < 1) { // Client Check
+      toast.error("Yeterli enerjin yok!", {
+        className: "bg-red-700"
+      })
+      return;
+    }
+    try {
+      const response = await fetch(`${BASE_URL}/progress`, {
+        credentials: 'include',
+        method: 'PATCH',
+        body: JSON.stringify({ cardId: id }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
 
-    const response = await fetch(`${BASE_URL}/progress`, {
-      credentials: 'include',
-      method: 'PATCH',
-      body: JSON.stringify({ cardId: id }),
-      headers: {
-        'Content-Type': 'application/json'
+      if (!response.ok) {
+        const resData = await response.json()
+        const error = new Error()
+        error.message = resData.message
+        throw error
       }
-    })
 
-    const resData = await response.json()
+      const resData = await response.json()
 
-    setProgress(resData.progress)
-    setEnergy(resData.energy)
+      setProgress(resData.progress)
+      setEnergy(resData.energy)
+    } catch (err: unknown) {
+      const error = err as Error
+
+      toast.error(error.message, {
+        className: "bg-red-700"
+      })
+    }
   }
 
 

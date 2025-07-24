@@ -8,9 +8,9 @@ async function energyCheck() {
     if (cachedValue) {
       const cachedEnergy = +cachedValue // Gets the cached value
 
-      if (cachedEnergy < 2) {
+      if (cachedEnergy < 1) {
         const error = new Error()
-        error.message = "You do not have enough energy!"
+        error.message = "Yeterli enerjin yok!"
         throw error
       }
 
@@ -20,10 +20,10 @@ async function energyCheck() {
 
     } else {
       const energy = await Energy.find({})
-      
-      if (energy[0].energy < 2) {
+
+      if (energy[0].energy < 1) {
         const error = new Error()
-        error.message = "You do not have enough energy!"
+        error.message = "Yeterli enerjin yok!"
         throw error
       }
 

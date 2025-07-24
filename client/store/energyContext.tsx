@@ -2,17 +2,17 @@
 import { useState, createContext, Dispatch, SetStateAction } from "react"
 
 type EnergyContextType = {
-  energy: number | undefined;
-  setEnergy: Dispatch<SetStateAction<number | undefined>>;
+  energy: number;
+  setEnergy: Dispatch<SetStateAction<number>>;
 };
 
 export const EnergyContext = createContext<EnergyContextType>({
-  energy: undefined,
+  energy: 0,
   setEnergy: () => { }
 })
 
 export default function EnergyContextProvider({ children }: { children: React.ReactNode }) {
-  const [energy, setEnergy] = useState<number | undefined>(undefined)
+  const [energy, setEnergy] = useState<number>(0)
 
 
   return (
