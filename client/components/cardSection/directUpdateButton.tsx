@@ -1,0 +1,51 @@
+import energyIcon from "../../assets/energyPng.png"
+import Image from "next/image"
+import { useContext } from "react"
+import { EnergyContext } from "@/store/energyContext"
+
+interface ComponentProps {
+  setProgress: React.Dispatch<React.SetStateAction<number>>
+  setLevel: React.Dispatch<React.SetStateAction<number>>
+  id: string
+}
+
+export default function DirectUpdateButton({ setProgress, setLevel, id }: ComponentProps) {
+
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL
+  const { energy, setEnergy } = useContext(EnergyContext)
+
+  async function directUpdateItem() {
+
+    const response = await fetch(`${BASE_URL}/instant-level`, {
+      credentials: 'include',
+      method: 'PATCH',
+      body: JSON.stringify({ cardId: id }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    const resData = await response.json()
+    console.log(resData)
+    setProgress(resData.progress)
+    setLevel(resData.level)
+    setEnergy(resData.energy)
+  }
+
+
+  return (
+    <button
+      onClick={directUpdateItem}
+      className="w-full text-[9px] font-semibold bg-activeNav text-navButtonColor rounded-full h-[15px] cursor-pointer flex items-center justify-center gap-1"
+      style={{
+        boxShadow: `inset 3px 3px 5px rgba(248, 248, 248, 0.7), inset 0 2px 4px rgba(93, 83, 107, 0.7)`
+      }}
+    >
+      <Image
+        src={energyIcon}
+        alt="icon"
+        className="w-3 h-3"
+      />
+      <span className="font-semibold text-[#EE39A8]">-50</span> Hızlı Yükselt
+    </button>
+  )
+}

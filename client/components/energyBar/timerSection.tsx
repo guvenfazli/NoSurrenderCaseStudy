@@ -50,11 +50,6 @@ export default function TimerSection() {
     }
   }, [timer])
 
-
-
-
-
-
   return (
     <div className="flex items-center gap-2 mb-2 relative">
       <Image src={energyIcon} alt="Energy Icon" className="w-15 h-15 -bottom-10 -left-5 z-10 absolute" />

@@ -8,13 +8,13 @@ async function energyCheck() {
     if (cachedValue) {
       const cachedEnergy = +cachedValue // Gets the cached value
 
-      if (cachedEnergy < 1) {
+      if (cachedEnergy < 50) {
         const error = new Error()
         error.message = "Yeterli enerjin yok!"
         throw error
       }
 
-      const updatedEnergy = cachedEnergy - 1
+      const updatedEnergy = cachedEnergy - 50
       await redisClient.set(`energy/:userId`, updatedEnergy, { expiration: { type: 'EX', value: 5 * 60 } }) // Updates the cache
       return updatedEnergy
 
@@ -27,7 +27,7 @@ async function energyCheck() {
         throw error
       }
 
-      const updatedEnergy = energy[0].energy - 1
+      const updatedEnergy = energy[0].energy - 50
       await redisClient.set(`energy/:userId`, updatedEnergy, { expiration: { type: 'EX', value: 5 * 60 } })
       return updatedEnergy
     }
