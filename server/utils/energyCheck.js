@@ -1,7 +1,7 @@
 const Energy = require('../models/energy')
 const redisClient = require('../utils/redis')
 
-async function energyCheck(energy) {
+async function energyCheck() {
   try {
     const cachedValue = await redisClient.get('energy')
 
@@ -14,7 +14,7 @@ async function energyCheck(energy) {
         throw error
       }
 
-      const updatedEnergy = cachedEnergy - 2
+      const updatedEnergy = cachedEnergy - 1
       await redisClient.set(`energy`, updatedEnergy, { expiration: { type: 'EX', value: 5 * 60 } }) // Updates the cache
       return updatedEnergy
 
@@ -27,7 +27,7 @@ async function energyCheck(energy) {
         throw error
       }
 
-      const updatedEnergy = energy[0].energy - 2
+      const updatedEnergy = energy[0].energy - 1
       await redisClient.set(`energy`, updatedEnergy, { expiration: { type: 'EX', value: 5 * 60 } })
       return updatedEnergy
     }

@@ -4,28 +4,28 @@ import { useContext } from "react"
 import { EnergyContext } from "@/store/energyContext"
 import { ItemType } from "@/types/globalTypes"
 interface ComponentProps {
-  setItemList: React.Dispatch<React.SetStateAction<ItemType[]>>
+  setProgress: React.Dispatch<React.SetStateAction<number>>
   id: string
 }
 
-export default function UpgradeButton({ setItemList, id }: ComponentProps) {
+export default function UpgradeButton({ setProgress, id }: ComponentProps) {
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL
   const { energy, setEnergy } = useContext(EnergyContext)
 
   async function upgradeItem() {
 
-    const response = await fetch(`${BASE_URL}/upgradeLevelStatus/${id}`, {
+    const response = await fetch(`${BASE_URL}/progress`, {
       credentials: 'include',
       method: 'PATCH',
-      body: JSON.stringify({ energy }),
+      body: JSON.stringify({ cardId: id }),
       headers: {
         'Content-Type': 'application/json'
       }
     })
 
     const resData = await response.json()
-    console.log(resData)
-    setItemList(resData.itemList)
+
+    setProgress(resData.progress)
     setEnergy(resData.energy)
   }
 
