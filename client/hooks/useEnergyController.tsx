@@ -20,7 +20,7 @@ export default function useEnergyController<T>(url: string) {
         }
 
         const resData = await response.json()
-  
+   
         setEnergy(resData.energy)
         setIsLoading(false)
       } catch (err: unknown) {

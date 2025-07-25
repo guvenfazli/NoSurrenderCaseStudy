@@ -19,15 +19,18 @@ const itemSchema = new Schema({
   itemSpecs: {
     1: {
       name: { type: String, required: true },
-      description: { type: String, required: true }
+      description: { type: String, required: true },
+      imageUrl: { type: String, required: true }
     },
     2: {
       name: { type: String, required: true },
-      description: { type: String, required: true }
+      description: { type: String, required: true },
+      imageUrl: { type: String, required: true }
     },
     3: {
       name: { type: String, required: true },
-      description: { type: String, required: true }
+      description: { type: String, required: true },
+      imageUrl: { type: String, required: true }
     }
   }
 })

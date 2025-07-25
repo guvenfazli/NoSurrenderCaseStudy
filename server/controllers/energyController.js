@@ -1,20 +1,44 @@
 const Energy = require('../models/energy')
 const redisClient = require('../utils/redis')
-
+const dayjs = require('dayjs')
 exports.getEnergy = async (req, res, next) => {
   try {
     const cachedItems = await redisClient.get(`energy/:userId`)
     if (cachedItems) {
       const energy = JSON.parse(cachedItems)
-      res.status(200).json({ energy })
+      const now = dayjs();
+      const lastUpdate = dayjs.unix(energy.lastUpdateStamp);
+
+      const elapsedMinutes = now.diff(lastUpdate, "minute");
+      const energyToAdd = Math.floor(elapsedMinutes / 2);
+
+      let updatedEnergy = energy.energy;
+
+      if (energyToAdd > 0) {
+        updatedEnergy = Math.min(energy.energy + energyToAdd, 100);
+
+        const updatedTimestamp = lastUpdate.add(energyToAdd * 2, "minute").unix();
+
+        await redisClient.set(
+          `energy/:userId`,
+          JSON.stringify({ energy: updatedEnergy, lastUpdateStamp: updatedTimestamp }),
+          { EX: 5 * 60 }
+        );
+      }
+
+      res.status(200).json({ energy: updatedEnergy })
       return;
     }
 
-    const energy = await Energy.find({})
+    const energy = await Energy.findOne({ _id: "688062edebdc5643620fccd6" })
 
-    await redisClient.set(`energy/:userId`, JSON.stringify(energy[0].energy), { expiration: { type: 'EX', value: 5 * 60 } })
+    const now = dayjs()
+    const lastUpdateStamp = dayjs().unix(now)
+    await Energy.updateOne({ _id: "688062edebdc5643620fccd6" }, { $set: { lastUpdateStamp: lastUpdateStamp } })
 
-    res.status(200).json({ energy: energy[0].energy })
+    await redisClient.set(`energy/:userId`, JSON.stringify({ energy: energy.energy, lastUpdateStamp: lastUpdateStamp }), { expiration: { type: 'EX', value: 5 * 60 } })
+
+    res.status(200).json({ energy: energy.energy, lastUpdateStamp })
 
     return;
 
@@ -30,16 +54,19 @@ exports.updateEnergy = async (req, res, next) => {
   try {
     const cachedItems = await redisClient.get(`energy/:userId`)
     if (cachedItems) { // If its already cached
-      const cachedEnergy = +cachedItems // Gets the cached value
-      const updatedEnergy = cachedEnergy + 1
-      await redisClient.set(`energy/:userId`, updatedEnergy, { expiration: { type: 'EX', value: 5 * 60 } }) // Updates the cache as well
-      await Energy.updateOne({ _id: "688062edebdc5643620fccd6" }, { $set: { energy: updatedEnergy } })
+      const cachedEnergy = JSON.parse(cachedItems) // Gets the cached value
+      const updatedEnergy = +cachedEnergy.energy + 1
+      const now = dayjs();
+      const lastUpdateStamp = dayjs().unix(now)
+      await redisClient.set(`energy/:userId`, JSON.stringify({ energy: updatedEnergy, lastUpdateStamp }), { expiration: { type: 'EX', value: 5 * 60 } })
+      // Updates the cache as well
+      await Energy.updateOne({ _id: "688062edebdc5643620fccd6" }, { $set: { energy: updatedEnergy, lastUpdateStamp } })
       return res.status(200).json({ energy: updatedEnergy }) // Returns the new energy
     }
 
     /* If it is not cached */
-    const energy = await Energy.find({})
-    const updatedEnergy = energy[0].energy + 1
+    const energy = await Energy.findOne({ _id: "688062edebdc5643620fccd6" })
+    const updatedEnergy = energy.energy + 1
     await redisClient.set(`energy/:userId`, updatedEnergy, { expiration: { type: 'EX', value: 5 * 60 } }) // Sets the cache for future updates
     await Energy.updateOne({ _id: "688062edebdc5643620fccd6" }, { $set: { energy: updatedEnergy } })
     res.status(200).json({ energy: updatedEnergy }) // Returns the current energy level of user
