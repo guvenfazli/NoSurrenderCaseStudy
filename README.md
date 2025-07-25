@@ -3,7 +3,13 @@
 **July 2025**
 
 ---
-
+# 📁  Project Structure 
+```bash
+├── client/         # Next.js Frontend
+│   └── public/     # Static assets (icons, images)
+│   └── readmeImages/  # Images for documentation
+├── server/         # Node.js Backend (Express)
+```
 ## 🧑‍💻 Note from the Developer
 
 In this project, I personally focused mostly on **caching**, **performance optimization**, and **preventing data loss**.
@@ -127,5 +133,17 @@ With this solution:
 <img src="client/readmeImages/generalDesign.PNG">
 
 ---
+
+```bash
+# CLIENT SETUP
+cd client
+npm install
+npm run dev
+
+# SERVER SETUP
+cd server
+npm install
+npm run dev
+```
 
 > _Thank you for reading_  
