@@ -52,14 +52,28 @@ exports.upgradeLevelStatus = async (req, res, next) => { // Upgrades the status 
       I created a util function as dataBaseSave, which chooses the method of the functions, will be executing in order to save changes to the database. 
       */
 
+      const updatedItems = userRequestList.get(`itemList/:userId`)
+
       if (isActive) clearTimeout(userRequestList.get(`userId`))
+      if (updatedItems) {
+        const sameItem = updatedItems.some((item) => item.cardId === cardId)
+        if (sameItem) {
+          const itemIndex = updatedItems.findIndex((item) => item.cardId === cardId)
+          updatedItems[itemIndex] = { cardId, updatedStatus }
+        } else {
+          updatedItems.push({ cardId, updatedStatus });
+        }
+      }
 
       const timer = setTimeout(async () => { // Once the timer ends, it saves the changes to the database and removes the user from request queue.
-        await dataBaseSave(Item, "upgradeLevelStatus", cardId, updatedEnergy, updatedStatus)
+        await dataBaseSave(Item, "upgradeLevelStatus", cardId, updatedEnergy, updatedStatus, updatedItems)
         userRequestList.delete(`userId`)
+        userRequestList.delete(`itemList/:userId`)
       }, 2000)
 
+
       userRequestList.set(`userId`, timer)
+      userRequestList.set(`itemList/:userId`, updatedItems ? updatedItems : [{ cardId, updatedStatus }])
 
       res.status(200).json({ progress: foundItem.levelStatus, energy: updatedEnergy })
       return;
