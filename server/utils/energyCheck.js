@@ -6,7 +6,8 @@ async function energyCheck() {
     const cachedValue = await redisClient.get('energy/:userId')
 
     if (cachedValue) {
-      const cachedEnergy = +cachedValue // Gets the cached value
+      const cache = JSON.parse(cachedValue) // Gets the cached value
+      const cachedEnergy = +cache.energy
 
       if (cachedEnergy < 1) {
         const error = new Error()
@@ -15,7 +16,7 @@ async function energyCheck() {
       }
 
       const updatedEnergy = cachedEnergy - 1
-      await redisClient.set(`energy/:userId`, updatedEnergy, { expiration: { type: 'EX', value: 5 * 60 } }) // Updates the cache
+      await redisClient.set(`energy/:userId`, JSON.stringify({ energy: updatedEnergy, lastUpdateStamp: cachedEnergy.lastUpdateStamp }), { expiration: { type: 'EX', value: 5 * 60 } }) // Updates the cache
       return updatedEnergy
 
     } else {
@@ -28,7 +29,7 @@ async function energyCheck() {
       }
 
       const updatedEnergy = energy[0].energy - 1
-      await redisClient.set(`energy/:userId`, updatedEnergy, { expiration: { type: 'EX', value: 5 * 60 } })
+      await redisClient.set(`energy/:userId`, JSON.stringify({ energy: updatedEnergy, lastUpdateStamp: energy.lastUpdateStamp }), { expiration: { type: 'EX', value: 5 * 60 } })
       return updatedEnergy
     }
   } catch (err) {

@@ -45,7 +45,8 @@ exports.upgradeLevelStatus = async (req, res, next) => { // Upgrades the status 
       await redisClient.set(`isActive/:userId`, 'true', { expiration: { type: 'EX', value: 1 * 60 } })
       // Updating the cache and shows that the user sent a request within the 5 seconds.
 
-      /* This section, checks the request list first, if the user sent a request within the 5 seconds, it will clear the timer and onverwrites. If the user is not sending request anymore, which means user stopped, it saves the changes to the database.
+      /* 
+      This section, checks the request list first, if the user sent a request within the 5 seconds, it will clear the timer and onverwrites. If the user is not sending request anymore, which means user stopped, it saves the changes to the database.
       
       I created a util function as dataBaseSave, which chooses the method of the functions, will be executing in order to save changes to the database. 
       */

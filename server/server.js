@@ -5,9 +5,6 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const redisClient = require('./utils/redis')
 
-
-
-
 // ROUTES
 const itemRoutes = require('./routes/itemRoutes')
 const energyRoutes = require('./routes/energyRoutes')
