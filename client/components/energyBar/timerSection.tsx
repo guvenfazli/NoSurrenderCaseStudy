@@ -6,14 +6,29 @@ import { EnergyContext } from "@/store/energyContext"
 
 export default function TimerSection() {
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL
-  const { energy, setEnergy } = useContext(EnergyContext)
-  const [timer, setTimer] = useState(120)
+  const { energy, setEnergy, timer, setTimer } = useContext(EnergyContext)
+  const [activeTimer, setActiveTimer] = useState(timer)
+
+  function formatTime(seconds: number): string { // Converts the time into mm:ss
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+
+    const paddedMinutes = String(minutes).padStart(2, "0");
+    const paddedSeconds = String(secs).padStart(2, "0");
+
+    return `${paddedMinutes}:${paddedSeconds}`;
+  }
 
   async function updateEnergy() {
     const response = await fetch(`${BASE_URL}/energy/updateEnergy`, {
       credentials: "include",
       method: "PATCH",
+      body: JSON.stringify({ timer }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
     })
+
     const resData = await response.json()
 
     if (resData.energy >= 100) {
@@ -26,9 +41,8 @@ export default function TimerSection() {
 
 
   useEffect(() => {
-
     const interval = setInterval(() => {
-      setTimer(((prev) => {
+      setActiveTimer(((prev) => {
         if (prev < 1) {
           return 120
         } else {
@@ -37,20 +51,23 @@ export default function TimerSection() {
       }))
     }, 1000)
 
-    if (timer === 0) {
+    if (activeTimer === 0) {
       updateEnergy()
     }
 
     return () => {
+      setTimer(activeTimer)
       clearInterval(interval)
     }
-  }, [timer])
+  }, [activeTimer])
+
+
 
   return (
     <div className="flex items-center gap-2 mb-2 relative">
       <Image src={energyIcon} alt="Energy Icon" className="w-15 h-15 -bottom-10 -left-5 z-10 absolute" />
       <p className="text-[#F4BC79] font-bold text-sm ml-12">Enerji</p>
-      <p className="text-[#5B5B60] text-xs ml-auto">%1 yenilenmesine kalan {timer}</p>
+      <p className="text-[#5B5B60] text-xs ml-auto">%1 yenilenmesine kalan {formatTime(activeTimer)}</p>
     </div>
   )
 }

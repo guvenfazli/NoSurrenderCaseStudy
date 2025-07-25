@@ -2,6 +2,7 @@ const Energy = require('../models/energy')
 const redisClient = require('../utils/redis')
 const dayjs = require('dayjs')
 exports.getEnergy = async (req, res, next) => {
+
   try {
     const cachedItems = await redisClient.get(`energy/:userId`)
     if (cachedItems) { // If it is cached, updates the energy with the calculation of timestamps. 
@@ -19,12 +20,12 @@ exports.getEnergy = async (req, res, next) => {
         const updatedTimestamp = lastUpdate.add(energyToAdd * 2, "minute").unix();
         await redisClient.set(
           `energy/:userId`,
-          JSON.stringify({ energy: updatedEnergy, lastUpdateStamp: updatedTimestamp }),
+          JSON.stringify({ energy: updatedEnergy, lastUpdateStamp: updatedTimestamp, }),
           { EX: 5 * 60 }
         );
       }
 
-      res.status(200).json({ energy: updatedEnergy })
+      res.status(200).json({ energy: updatedEnergy, })
       return;
     }
 
@@ -34,9 +35,9 @@ exports.getEnergy = async (req, res, next) => {
     const lastUpdateStamp = dayjs().unix(now)
     await Energy.updateOne({ _id: "688062edebdc5643620fccd6" }, { $set: { lastUpdateStamp: lastUpdateStamp } })
 
-    await redisClient.set(`energy/:userId`, JSON.stringify({ energy: energy.energy, lastUpdateStamp: lastUpdateStamp }), { expiration: { type: 'EX', value: 5 * 60 } })
+    await redisClient.set(`energy/:userId`, JSON.stringify({ energy: energy.energy, lastUpdateStamp: lastUpdateStamp, }), { expiration: { type: 'EX', value: 5 * 60 } })
 
-    res.status(200).json({ energy: energy.energy, lastUpdateStamp })
+    res.status(200).json({ energy: energy.energy, lastUpdateStamp, })
 
     return;
 
@@ -48,6 +49,7 @@ exports.getEnergy = async (req, res, next) => {
 exports.updateEnergy = async (req, res, next) => {
   // I am using Cache-Aside pattern here because, it is only being run in every 2 minutes. I believe it is safe to use Cache Aside Pattern Here
 
+
   try {
     const cachedItems = await redisClient.get(`energy/:userId`)
     if (cachedItems) { // If its already cached
@@ -55,10 +57,10 @@ exports.updateEnergy = async (req, res, next) => {
       const updatedEnergy = +cachedEnergy.energy < 100 ? +cachedEnergy.energy + 1 : +cachedEnergy.energy
       const now = dayjs();
       const lastUpdateStamp = dayjs().unix(now)
-      await redisClient.set(`energy/:userId`, JSON.stringify({ energy: updatedEnergy, lastUpdateStamp }), { expiration: { type: 'EX', value: 5 * 60 } })
+      await redisClient.set(`energy/:userId`, JSON.stringify({ energy: updatedEnergy, lastUpdateStamp, }), { expiration: { type: 'EX', value: 5 * 60 } })
       // Updates the cache as well
       await Energy.updateOne({ _id: "688062edebdc5643620fccd6" }, { $set: { energy: updatedEnergy, lastUpdateStamp } })
-      return res.status(200).json({ energy: updatedEnergy }) // Returns the new energy
+      return res.status(200).json({ energy: updatedEnergy, }) // Returns the new energy
     }
 
     /* If it is not cached */
