@@ -47,7 +47,7 @@ export default function DirectUpdateButton({ setProgress, setLevel, id, required
       style={{
         boxShadow: `inset 3px 3px 5px rgba(248, 248, 248, 0.7), inset 0 2px 4px rgba(93, 83, 107, 0.7)`
       }}
-      disabled={isUpdating}
+      disabled={isUpdating || energy < requiredEnergy}
     >
       <Image
         src={energyIcon}

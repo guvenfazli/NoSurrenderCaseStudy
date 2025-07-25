@@ -6,8 +6,8 @@ import { EnergyContext } from "@/store/energyContext"
 
 export default function TimerSection() {
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL
-  const { energy, setEnergy, timer, setTimer } = useContext(EnergyContext)
-  const [activeTimer, setActiveTimer] = useState(timer)
+  const { energy, setEnergy } = useContext(EnergyContext)
+  const [activeTimer, setActiveTimer] = useState(120)
 
   function formatTime(seconds: number): string { // Converts the time into mm:ss
     const minutes = Math.floor(seconds / 60);
@@ -22,11 +22,7 @@ export default function TimerSection() {
   async function updateEnergy() {
     const response = await fetch(`${BASE_URL}/energy/updateEnergy`, {
       credentials: "include",
-      method: "PATCH",
-      body: JSON.stringify({ timer }),
-      headers: {
-        'Content-Type': 'application/json'
-      }
+      method: "PATCH"
     })
 
     const resData = await response.json()
@@ -56,7 +52,6 @@ export default function TimerSection() {
     }
 
     return () => {
-      setTimer(activeTimer)
       clearInterval(interval)
     }
   }, [activeTimer])

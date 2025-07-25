@@ -49,7 +49,6 @@ exports.getEnergy = async (req, res, next) => {
 exports.updateEnergy = async (req, res, next) => {
   // I am using Cache-Aside pattern here because, it is only being run in every 2 minutes. I believe it is safe to use Cache Aside Pattern Here
 
-
   try {
     const cachedItems = await redisClient.get(`energy/:userId`)
     if (cachedItems) { // If its already cached

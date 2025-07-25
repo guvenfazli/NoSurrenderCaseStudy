@@ -1,5 +1,5 @@
 "use client"
-import { useState, createContext, Dispatch, SetStateAction } from "react"
+import { useState, createContext, Dispatch, SetStateAction, useEffect } from "react"
 
 type EnergyContextType = {
   energy: number;
@@ -11,13 +11,14 @@ type EnergyContextType = {
 export const EnergyContext = createContext<EnergyContextType>({
   energy: 0,
   setEnergy: () => { },
-  timer: 120,
+  timer: 0,
   setTimer: () => { }
 })
 
 export default function EnergyContextProvider({ children }: { children: React.ReactNode }) {
   const [energy, setEnergy] = useState<number>(0)
   const [timer, setTimer] = useState<number>(120)
+
 
   return (
     <EnergyContext.Provider value={{ energy, setEnergy, timer, setTimer }}>
