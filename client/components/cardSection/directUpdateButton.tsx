@@ -26,7 +26,6 @@ export default function DirectUpdateButton({ setProgress, setLevel, id, required
       }
     })
     const resData = await response.json()
-    console.log(resData)
     setProgress(resData.progress)
     setLevel(resData.level)
     setEnergy(resData.energy)
