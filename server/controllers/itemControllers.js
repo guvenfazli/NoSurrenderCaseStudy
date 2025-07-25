@@ -4,7 +4,7 @@ const energyCheck = require('../utils/energyCheck')
 const instantEnergy = require('../utils/instantEnergy')
 const dataBaseSave = require('../utils/dataBaseSave')
 
-const userRequestList = new Map() // This Map holds the users, who sent a request within the 5 seconds. 
+const userRequestList = new Map() // This Map holds the users, who sent a request within the 2 seconds. 
 // It will be working with the actual user ID, since i do not have any users or auth system or cookies/JWT etc. i am just writing userId static.
 
 exports.getItems = async (req, res, next) => {
@@ -43,10 +43,10 @@ exports.upgradeLevelStatus = async (req, res, next) => { // Upgrades the status 
       await redisClient.set(`itemList/:userId`, JSON.stringify(itemList), { expiration: { type: 'EX', value: 5 * 60 } })
 
       await redisClient.set(`isActive/:userId`, 'true', { expiration: { type: 'EX', value: 1 * 60 } })
-      // Updating the cache and shows that the user sent a request within the 5 seconds.
+      // Updating the cache and shows that the user sent a request within the 2 seconds.
 
       /* 
-      This section, checks the request list first, if the user sent a request within the 5 seconds, it will clear the timer and onverwrites. If the user is not sending request anymore, which means user stopped, it saves the changes to the database.
+      This section, checks the request list first, if the user sent a request within the 2 seconds, it will clear the timer and onverwrites. If the user is not sending request anymore, which means user stopped, it saves the changes to the database.
       
       I created a util function as dataBaseSave, which chooses the method of the functions, will be executing in order to save changes to the database. 
       */
@@ -56,7 +56,7 @@ exports.upgradeLevelStatus = async (req, res, next) => { // Upgrades the status 
       const timer = setTimeout(async () => { // Once the timer ends, it saves the changes to the database and removes the user from request queue.
         await dataBaseSave(Item, "upgradeLevelStatus", cardId, updatedEnergy)
         userRequestList.delete(`userId`)
-      }, 5000)
+      }, 2000)
 
       userRequestList.set(`userId`, timer)
 
@@ -100,9 +100,9 @@ exports.updateLevel = async (req, res, next) => { // Updates the level of the it
       await redisClient.set(`itemList/:userId`, JSON.stringify(itemList), { expiration: { type: 'EX', value: 5 * 60 } })
 
       await redisClient.set(`isActive/:userId`, 'true', { expiration: { type: 'EX', value: 1 * 60 } })
-      // Updating the cache and shows that the user sent a request within the 5 seconds.
+      // Updating the cache and shows that the user sent a request within the 2 seconds.
 
-      /* This section, checks the request list first, if the user sent a request within the 5 seconds, it will clear the timer and onverwrites. If the user is not sending request anymore, which means user stopped, it saves the changes to the database.
+      /* This section, checks the request list first, if the user sent a request within the 2 seconds, it will clear the timer and onverwrites. If the user is not sending request anymore, which means user stopped, it saves the changes to the database.
  
       I created a util function as dataBaseSave, which chooses the method of the functions, will be executing in order to save changes to the database. 
       */
@@ -113,7 +113,7 @@ exports.updateLevel = async (req, res, next) => { // Updates the level of the it
         console.log('worked!')
         await dataBaseSave(Item, "updateLevel", cardId)
         userRequestList.delete(`userId`)
-      }, 5000)
+      }, 2000)
 
       userRequestList.set(`userId`, timer)
       res.status(200).json({ level: foundItem.itemLevel, progress: 0 })
@@ -159,10 +159,10 @@ exports.instantLevel = async (req, res, next) => { // Updates the level instantl
       await redisClient.set(`itemList/:userId`, JSON.stringify(itemList), { expiration: { type: 'EX', value: 5 * 60 } })
 
       await redisClient.set(`isActive/:userId`, 'true', { expiration: { type: 'EX', value: 1 * 60 } })
-      // Updating the cache and shows that the user sent a request within the 5 seconds.
+      // Updating the cache and shows that the user sent a request within the 2 seconds.
 
       /* 
-      This section, checks the request list first, if the user sent a request within the 5 seconds, it will clear the timer and onverwrites. If the user is not sending request anymore, which means user stopped, it saves the changes to the database.
+      This section, checks the request list first, if the user sent a request within the 2 seconds, it will clear the timer and onverwrites. If the user is not sending request anymore, which means user stopped, it saves the changes to the database.
  
       I created a util function as dataBaseSave, which chooses the method of the functions, will be executing in order to save changes to the database. 
       */
@@ -172,7 +172,7 @@ exports.instantLevel = async (req, res, next) => { // Updates the level instantl
       const timer = setTimeout(async () => { // Once the timer ends, it saves the changes to the database and removes the user from request queue.
         await dataBaseSave(Item, "instantUpdate", cardId, cachedEnergy)
         userRequestList.delete(`userId`)
-      }, 5000)
+      }, 2000)
       userRequestList.set(`userId`, timer)
 
       res.status(200).json({ level: foundItem.itemLevel, progress: 0, energy: cachedEnergy })
