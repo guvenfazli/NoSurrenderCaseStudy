@@ -22,7 +22,8 @@ export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) { {/* I used a layout where its a mobile game but on a web because of the figma design. I have been told it is okay, if needed, can convert it into web as well. */}
+}>) {
+  {/* I used a layout where its a mobile game but on a web because of the figma design. I have been told it is okay, if needed, can convert it into web as well. */ }
   return (
     <html lang="en">
       <body
@@ -33,8 +34,9 @@ export default function RootLayout({
             <div className="w-full max-w-[390px] p-4 min-h-[90vh] bg-[#111118] rounded-2xl shadow-lg text-white border border-white">
               {children}
             </div>
+            <Toaster richColors position="bottom-center"/>
           </div>
-          <Toaster richColors />
+
         </EnergyContextProvider>
       </body>
     </html>

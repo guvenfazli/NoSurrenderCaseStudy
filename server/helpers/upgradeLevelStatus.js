@@ -8,7 +8,7 @@ async function upgradeLevelStatus(database, cardId, updatedStatus) { // This is 
       foundItem.levelStatus = updatedStatus
     }
     await foundItem.save()
-    console.log('worked')
+
   } catch (err) {
     return false
   }

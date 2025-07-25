@@ -17,7 +17,7 @@ export default function UpgradeButton({ setProgress, id }: ComponentProps) {
   async function upgradeItem() {
     if (energy < 1) { // Client Check
       toast.error("Yeterli enerjin yok!", {
-        className: "bg-red-700"
+        className: "bg-red-300"
       })
       return;
     }
@@ -51,7 +51,7 @@ export default function UpgradeButton({ setProgress, id }: ComponentProps) {
     } catch (err: unknown) {
       const error = err as Error
       toast.error(error.message, {
-        className: "bg-red-700"
+        className: "bg-red-300"
       })
     }
   }
@@ -64,7 +64,7 @@ export default function UpgradeButton({ setProgress, id }: ComponentProps) {
       style={{
         boxShadow: `inset 3px 3px 5px rgba(248, 248, 248, 0.7), inset 0 2px 4px rgba(93, 83, 107, 0.7)`
       }}
-      disabled={isUpgrading || energy < 1}
+ 
     >
       <Image
         src={energyIcon}

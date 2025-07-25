@@ -111,7 +111,6 @@ exports.updateLevel = async (req, res, next) => { // Updates the level of the it
       if (isActive) clearTimeout(userRequestList.get(`userId`))
 
       const timer = setTimeout(async () => { // Once the timer ends, it saves the changes to the database and removes the user from request queue.
-        console.log('worked!')
         await dataBaseSave(Item, "updateLevel", cardId)
         userRequestList.delete(`userId`)
       }, 2000)
