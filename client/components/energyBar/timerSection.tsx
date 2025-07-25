@@ -13,10 +13,6 @@ export default function TimerSection() {
     const response = await fetch(`${BASE_URL}/energy/updateEnergy`, {
       credentials: "include",
       method: "PATCH",
-      body: JSON.stringify({ energy }),
-      headers: {
-        'Content-Type': 'application/json'
-      }
     })
     const resData = await response.json()
 
