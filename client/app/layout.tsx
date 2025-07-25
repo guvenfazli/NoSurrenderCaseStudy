@@ -22,17 +22,19 @@ export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) {
+}>) { {/* I used a layout where its a mobile game but on a web because of the figma design. I have been told it is okay, if needed, can convert it into web as well. */}
   return (
     <html lang="en">
       <body
         className={`antialiased ${geistMono}`}
       >
-        <EnergyContextProvider>
-          <div className="w-full max-w-[390px] p-4 min-h-screen bg-gradient-to-b from-[#111118] to-[#353345] text-white">
-            {children}
+        <EnergyContextProvider> {/* I used a layout where its a mobile game but on a web because of the figma design. */}
+          <div className="flex w-full h-screen justify-center items-center bg-[#111118]">
+            <div className="w-full max-w-[390px] p-4 min-h-[90vh] bg-[#111118] rounded-2xl shadow-lg text-white border border-white">
+              {children}
+            </div>
           </div>
-          <Toaster richColors/>
+          <Toaster richColors />
         </EnergyContextProvider>
       </body>
     </html>

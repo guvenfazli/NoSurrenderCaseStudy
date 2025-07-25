@@ -1,6 +1,6 @@
 import energyIcon from "../../assets/energyPng.png"
 import Image from "next/image"
-import { useContext } from "react"
+import { useContext, useState } from "react"
 import { EnergyContext } from "@/store/energyContext"
 import { toast } from "sonner"
 interface ComponentProps {
@@ -12,6 +12,8 @@ export default function UpgradeButton({ setProgress, id }: ComponentProps) {
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL
   const { energy, setEnergy } = useContext(EnergyContext)
 
+  const [isUpgrading, setIsUpgrading] = useState<boolean>(false)
+
   async function upgradeItem() {
     if (energy < 1) { // Client Check
       toast.error("Yeterli enerjin yok!", {
@@ -19,7 +21,11 @@ export default function UpgradeButton({ setProgress, id }: ComponentProps) {
       })
       return;
     }
+
     try {
+
+      setIsUpgrading(false)
+      
       const response = await fetch(`${BASE_URL}/progress`, {
         credentials: 'include',
         method: 'PATCH',
@@ -40,9 +46,10 @@ export default function UpgradeButton({ setProgress, id }: ComponentProps) {
 
       setProgress(resData.progress)
       setEnergy(resData.energy)
+      setIsUpgrading(false)
+
     } catch (err: unknown) {
       const error = err as Error
-
       toast.error(error.message, {
         className: "bg-red-700"
       })
@@ -57,13 +64,14 @@ export default function UpgradeButton({ setProgress, id }: ComponentProps) {
       style={{
         boxShadow: `inset 3px 3px 5px rgba(248, 248, 248, 0.7), inset 0 2px 4px rgba(93, 83, 107, 0.7)`
       }}
+      disabled={isUpgrading}
     >
       <Image
         src={energyIcon}
         alt="icon"
         className="w-3 h-3"
       />
-      <span className="font-semibold text-[#EE39A8]">-1</span> Geliştir
+      <span className="font-semibold text-[#EE39A8]">-1</span> {isUpgrading ? "Geliştiriliyor" : "Geliştir"}
     </button>
   )
 }

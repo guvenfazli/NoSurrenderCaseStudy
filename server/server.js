@@ -4,8 +4,15 @@ const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const redisClient = require('./utils/redis')
-
+const { rateLimit } = require('express-rate-limit') // Using Express Rate Limit Package in order to block spams/ddos attacks.
 // ROUTES
+const itemLimiter = rateLimit({
+  windowMs: 2 * 1000, 
+  limit: 30,          // Max 30 requests in 2 seconds.
+  message: "TOO MANY REQUEST",
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 const itemRoutes = require('./routes/itemRoutes')
 const energyRoutes = require('./routes/energyRoutes')
 
@@ -43,7 +50,7 @@ async function createRedis() {
 createRedis()
 
 // ROUTES
-app.use('/', itemRoutes)
+app.use('/', itemLimiter, itemRoutes)
 app.use('/energy', energyRoutes)
 
 

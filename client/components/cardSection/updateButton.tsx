@@ -1,3 +1,6 @@
+import { useState } from "react"
+
+
 interface ComponentProps {
   setProgress: React.Dispatch<React.SetStateAction<number>>
   setLevel: React.Dispatch<React.SetStateAction<number>>
@@ -5,9 +8,10 @@ interface ComponentProps {
 }
 export default function UpdateButton({ setProgress, setLevel, id }: ComponentProps) {
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL
+  const [isUpdating, setIsUpdating] = useState<boolean>(false)
 
   async function updateItem() {
-
+    setIsUpdating(true)
     const response = await fetch(`${BASE_URL}/level-up`, {
       credentials: 'include',
       method: 'PATCH',
@@ -21,6 +25,7 @@ export default function UpdateButton({ setProgress, setLevel, id }: ComponentPro
 
     setProgress(resData.progress)
     setLevel(resData.level)
+    setIsUpdating(false)
   }
 
   return (
@@ -30,8 +35,9 @@ export default function UpdateButton({ setProgress, setLevel, id }: ComponentPro
         boxShadow: `inset 3px 2px 5px rgba(248, 248, 248, 0.7), inset 0 -1px 3px rgba(93, 83, 107, 0.7)`
       }}
       onClick={() => updateItem()}
+      disabled={isUpdating}
     >
-      Yükselt
+      {isUpdating ? "Yükseliyor" : "Yükselt"}
     </button>
   );
 }
