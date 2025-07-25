@@ -35,9 +35,10 @@ exports.upgradeLevelStatus = async (req, res, next) => { // Upgrades the status 
     if (cachedItems) { // Updates the cache if the items are already have been cached.
       const itemList = JSON.parse(cachedItems)
       const foundItem = itemList.find((item) => item._id === cardId)
-
+      let updatedStatus;
       if (foundItem.levelStatus !== 100 && foundItem.itemLevel !== 3) {
         foundItem.levelStatus = foundItem.levelStatus + 2
+        updatedStatus = foundItem.levelStatus
       }
 
       await redisClient.set(`itemList/:userId`, JSON.stringify(itemList), { expiration: { type: 'EX', value: 5 * 60 } })
@@ -54,7 +55,7 @@ exports.upgradeLevelStatus = async (req, res, next) => { // Upgrades the status 
       if (isActive) clearTimeout(userRequestList.get(`userId`))
 
       const timer = setTimeout(async () => { // Once the timer ends, it saves the changes to the database and removes the user from request queue.
-        await dataBaseSave(Item, "upgradeLevelStatus", cardId, updatedEnergy)
+        await dataBaseSave(Item, "upgradeLevelStatus", cardId, updatedEnergy, updatedStatus)
         userRequestList.delete(`userId`)
       }, 2000)
 
