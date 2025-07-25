@@ -25,7 +25,7 @@ exports.getItems = async (req, res, next) => {
   }
 }
 
-exports.upgradeLevelStatus = async (req, res, next) => {
+exports.upgradeLevelStatus = async (req, res, next) => { // Upgrades the status (%) of the item.
   const { cardId } = req.body
   const isActive = req.isActive
   try {
@@ -53,7 +53,7 @@ exports.upgradeLevelStatus = async (req, res, next) => {
       if (isActive) clearTimeout(userRequestList.get(`userId`))
 
       const timer = setTimeout(async () => { // Once the timer ends, it saves the changes to the database and removes the user from request queue.
-        await dataBaseSave(Item, "upgradeLevelStatus", cardId)
+        await dataBaseSave(Item, "upgradeLevelStatus", cardId, updatedEnergy)
         userRequestList.delete(`userId`)
       }, 5000)
 
@@ -83,7 +83,7 @@ exports.upgradeLevelStatus = async (req, res, next) => {
   }
 }
 
-exports.updateLevel = async (req, res, next) => {
+exports.updateLevel = async (req, res, next) => { // Updates the level of the item.
   const { cardId } = req.body
   const isActive = req.isActive
   try {
@@ -141,7 +141,7 @@ exports.updateLevel = async (req, res, next) => {
   }
 }
 
-exports.instantLevel = async (req, res, next) => {
+exports.instantLevel = async (req, res, next) => { // Updates the level instantly.
   const { cardId, requiredEnergy } = req.body
   const isActive = req.isActive
   try {
@@ -169,7 +169,7 @@ exports.instantLevel = async (req, res, next) => {
       if (isActive) clearTimeout(userRequestList.get(`userId`))
 
       const timer = setTimeout(async () => { // Once the timer ends, it saves the changes to the database and removes the user from request queue.
-        await dataBaseSave(Item, "instantUpdate", cardId)
+        await dataBaseSave(Item, "instantUpdate", cardId, cachedEnergy)
         userRequestList.delete(`userId`)
       }, 5000)
       userRequestList.set(`userId`, timer)
