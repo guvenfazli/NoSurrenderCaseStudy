@@ -30,7 +30,7 @@ Backed by **Redis caching**, a **debounce queue mechanism**, and a simple yet ef
 ## 🎯 Objective
 
 Players try to upgrade their cards using **limited energy**.  
-Each click consumes energy and increases the card level by **2%**.  
+Each click consumes energy and increases the card progress by **2%**.  
 However, this process was slow and weak in terms of UX.
 
 > ✅ **My goal:**  
@@ -43,8 +43,8 @@ Make the process faster and more engaging, while ensuring backend **performance*
 > _“Why should a user click 50 times to level up?”_
 
 - Added a **“Quick Upgrade”** button (appears if the user has enough energy)
-- With one click, the card gets upgraded as much as possible
-- **Progress bar animations** and **toast messages** provide instant feedback
+- With one click, the card gets updated one more level
+- **Toast message** provide instant feedback
 - Applied **debounce logic** on the UI to prevent spamming
 
 📸 _Example Screenshot_  
@@ -81,7 +81,7 @@ Make the process faster and more engaging, while ensuring backend **performance*
 
 ## 🧷 Data Consistency
 
-> _“No more risk of losing energy data.”_
+> _“No more risk of losing data.”_
 
 Two Redis patterns implemented:
 
@@ -102,7 +102,6 @@ Two Redis patterns implemented:
 - **Caching**: Redis (cache-aside + debounce pattern)  
 - **Security**: express-rate-limit  
 - **Frontend**: Next.js 15, TailwindCSS 4, Shadcn UI, React 19  
-- **Structure**: Modular – `/client` & `/server`
 
 ---
 
@@ -129,4 +128,4 @@ With this solution:
 
 ---
 
-> _Thank you for reading — built with precision and performance in mind._ ⚡  
+> _Thank you for reading_  
