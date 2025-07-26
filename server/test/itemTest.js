@@ -1,4 +1,7 @@
+const express = require('express')
+const request = require('supertest')
 const expect = require('chai').expect
+const { rateLimit } = require('express-rate-limit')
 const sinon = require('sinon')
 const itemController = require("../controllers/itemControllers")
 const Energy = require('../models/energy')
@@ -283,5 +286,39 @@ describe('Checks the Item before Instant Level Up', () => {
     const result = await instantEnergy(req.body.requiredEnergy);
     expect(result).to.equal(false);
   })
-  
+
 })
+
+describe('Rate Limiter Test', () => {
+  let app;
+
+  beforeEach(() => {
+    app = express();
+
+    const itemLimiter = rateLimit({
+      windowMs: 2 * 1000,
+      limit: 30,
+      message: 'TOO MANY REQUEST',
+      standardHeaders: true,
+      legacyHeaders: false,
+    });
+
+    app.get('/test', itemLimiter, (req, res) => {
+      res.status(200).send('OK');
+    });
+  });
+
+  it('should allow 30 requests and block the 31st with 429 error', async () => {
+
+    for (let i = 0; i < 30; i++) {
+      const res = await request(app).get('/test');
+      expect(res.status).to.equal(200);
+      expect(res.text).to.equal('OK');
+    }
+
+
+    const blocked = await request(app).get('/test');
+    expect(blocked.status).to.equal(429);
+    expect(blocked.text).to.equal('TOO MANY REQUEST');
+  });
+});

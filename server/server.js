@@ -15,7 +15,6 @@ const itemLimiter = rateLimit({
 });
 const itemRoutes = require('./routes/itemRoutes')
 const energyRoutes = require('./routes/energyRoutes')
-
 // MODELS
 const Item = require('./models/items')
 const Energy = require('./models/energy')
@@ -55,6 +54,7 @@ createRedis()
 // ROUTES
 app.use('/', itemLimiter, itemRoutes)
 app.use('/energy', energyRoutes)
+
 
 
 // Error Middleware
