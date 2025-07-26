@@ -18,7 +18,6 @@ I imported methods for item releated stuff, upgrade - update - instant update. S
 */
 
 async function dataBaseSave({ database, action, cardId, energy, updatedStatus, updatedItems }) {
-  console.log(cardId)
   const operation = operations[action]
   await operation({ database, updatedItems, updatedStatus, cardId })
   await Energy.updateOne({ _id: "688062edebdc5643620fccd6" }, { $set: { energy } })

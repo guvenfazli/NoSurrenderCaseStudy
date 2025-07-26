@@ -261,6 +261,7 @@ exports.instantLevel = async (req, res, next) => { // Updates the level instantl
         })
         userRequestList.delete(`userId`)
       }, 2000)
+      
       userRequestList.set(`userId`, timer)
 
       res.status(200).json({ level: foundItem.itemLevel, progress: 0, energy: cachedEnergy })
