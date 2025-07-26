@@ -28,14 +28,29 @@ exports.getItems = async (req, res, next) => {
 exports.upgradeLevelStatus = async (req, res, next) => { // Upgrades the status (%) of the item.
   const { cardId } = req.body
   const isActive = req.isActive
+
   try {
     const updatedEnergy = await energyCheck() // Energy Handler, if it is below 1, throws error, if not, updates the cache or sets the cache for further usage.
     const cachedItems = await redisClient.get(`itemList/:userId`)
 
+
     if (cachedItems) { // Updates the cache if the items are already have been cached.
       const itemList = JSON.parse(cachedItems)
       const foundItem = itemList.find((item) => item._id === cardId)
+
+      if (!foundItem) {
+        const error = new Error()
+        error.message = "Eşya bulunamadı!"
+        throw error
+      }
+
       let updatedStatus;
+      if (foundItem.itemLevel === 3) {
+        const error = new Error()
+        error.message = "Eşya maksimum seviyede!"
+        throw error
+      }
+
       if (foundItem.levelStatus !== 100 && foundItem.itemLevel !== 3) {
         foundItem.levelStatus = foundItem.levelStatus + 2
         updatedStatus = foundItem.levelStatus
@@ -74,9 +89,7 @@ exports.upgradeLevelStatus = async (req, res, next) => { // Upgrades the status 
 
       userRequestList.set(`userId`, timer)
       userRequestList.set(`itemList/:userId`, updatedItems ? updatedItems : [{ cardId, updatedStatus }])
-
       res.status(200).json({ progress: foundItem.levelStatus, energy: updatedEnergy })
-      return;
     }
 
 
@@ -85,7 +98,16 @@ exports.upgradeLevelStatus = async (req, res, next) => { // Upgrades the status 
     const itemList = await Item.find({})
 
     const foundItem = itemList.find((item) => item._id.toString() === cardId.toString())
-
+    if (!foundItem) {
+      const error = new Error()
+      error.message = "Eşya bulunamadı!"
+      throw error
+    }
+    if (foundItem.itemLevel === 3) {
+      const error = new Error()
+      error.message = "Eşya maksimum seviyede!"
+      throw error
+    }
     if (foundItem.levelStatus !== 100 && foundItem.itemLevel !== 3) { // Level Status and Item Level Check
       foundItem.levelStatus = foundItem.levelStatus + 2
     }
