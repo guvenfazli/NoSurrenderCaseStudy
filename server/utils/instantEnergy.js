@@ -18,7 +18,8 @@ async function energyCheck(requiredEnergy) {
       const lastUpdate = dayjs.unix(now);
 
       const updatedEnergy = cachedEnergy - requiredEnergy
-      await redisClient.set(`energy/:userId`, JSON.stringify({ energy: updatedEnergy, lastUpdateStamp: lastUpdate }), { expiration: { type: 'EX', value: 5 * 60 } }) // Updates the cache
+      await redisClient.set(`energy/:userId`, JSON.stringify({ energy: updatedEnergy, lastUpdateStamp: lastUpdate }), { expiration: { type: 'EX', value: 5 * 60 } })
+      // Updates the cache
       return updatedEnergy
 
     } else {

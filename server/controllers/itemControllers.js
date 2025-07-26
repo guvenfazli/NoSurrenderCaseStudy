@@ -32,7 +32,7 @@ exports.upgradeLevelStatus = async (req, res, next) => { // Upgrades the status 
   try {
     const updatedEnergy = await energyCheck() // Energy Handler, if it is below 1, throws error, if not, updates the cache or sets the cache for further usage.
     const cachedItems = await redisClient.get(`itemList/:userId`)
-
+    
 
     if (cachedItems) { // Updates the cache if the items are already have been cached.
       const itemList = JSON.parse(cachedItems)
@@ -131,6 +131,18 @@ exports.updateLevel = async (req, res, next) => { // Updates the level of the it
     if (cachedItems) { // Updates the cache if the items are already have been cached.
       const itemList = JSON.parse(cachedItems)
       const foundItem = itemList.find((item) => item._id === cardId)
+      if (!foundItem) {
+        const error = new Error()
+        error.message = "Eşya bulunamadı!"
+        throw error
+      }
+
+      if (foundItem.itemLevel === 3) {
+        const error = new Error()
+        error.message = "Eşya maksimum seviyede!"
+        throw error
+      }
+
       if (foundItem.levelStatus === 100 && foundItem.itemLevel !== 3) {
         foundItem.itemLevel++
         foundItem.levelStatus = 0
@@ -164,6 +176,18 @@ exports.updateLevel = async (req, res, next) => { // Updates the level of the it
     const itemList = await Item.find({})
 
     const foundItem = itemList.find((item) => item._id.toString() === cardId.toString())
+
+    if (!foundItem) {
+      const error = new Error()
+      error.message = "Eşya bulunamadı!"
+      throw error
+    }
+
+    if (foundItem.itemLevel === 3) {
+      const error = new Error()
+      error.message = "Eşya maksimum seviyede!"
+      throw error
+    }
 
     if (foundItem.levelStatus === 100 && foundItem.itemLevel !== 3) { // Level Status and Item Level Check
       foundItem.itemLevel++
