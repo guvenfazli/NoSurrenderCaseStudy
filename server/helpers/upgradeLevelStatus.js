@@ -1,4 +1,4 @@
-async function upgradeLevelStatus(database, updatedItems) { // This is saving the changes to the database once the timeout ends.
+async function upgradeLevelStatus({ database, updatedItems }) { // This is saving the changes to the database once the timeout ends.
 
   try {
     /*   

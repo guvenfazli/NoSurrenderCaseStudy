@@ -10,7 +10,7 @@ const redisClient = require('../utils/redis')
 const energyCheck = require('../utils/energyCheck')
 const instantEnergy = require('../utils/instantEnergy')
 
-describe('Checks the Energy', () => {
+describe('Checks the Energy', () => { // Energy releated Tests
   beforeEach(() => {
     sinon.stub(redisClient, 'get')
     sinon.stub(redisClient, 'set')
@@ -55,7 +55,7 @@ describe('Checks the Energy', () => {
   })
 })
 
-describe('Checks the Item before doing any process', () => {
+describe('Checks the Item before doing any process', () => { // Upgrade Status releated Tests
   let req, res, next;
 
   beforeEach(() => {
@@ -151,7 +151,7 @@ describe('Checks the Item before doing any process', () => {
   })
 })
 
-describe('Checks the Item before Leveling Up', () => {
+describe('Checks the Item before Leveling Up', () => { // Level Up releated Tests
 
   let req, res, next;
 
@@ -245,7 +245,7 @@ describe('Checks the Item before Leveling Up', () => {
 
 })
 
-describe('Checks the Item before Instant Level Up', () => {
+describe('Checks the Item before Instant Level Up', () => { // Instant Level Up Releated Tests
   let req, res, next;
 
   beforeEach(() => {
@@ -289,7 +289,7 @@ describe('Checks the Item before Instant Level Up', () => {
 
 })
 
-describe('Rate Limiter Test', () => {
+describe('Rate Limiter Test', () => { // API Limiter SPAM Releated Test
   let app;
 
   beforeEach(() => {

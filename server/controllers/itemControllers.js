@@ -6,10 +6,12 @@ const dataBaseSave = require('../utils/dataBaseSave')
 
 const userRequestList = new Map() // This Map holds the users, who sent a request within the 2 seconds. 
 // It will be working with the actual user ID, since i do not have any users or auth system or cookies/JWT etc. i am just writing userId static.
+// It also holds the item ID list so users can do multiple updates
 
 exports.getItems = async (req, res, next) => {
   try {
     const cachedItems = await redisClient.get(`itemList/:userId`)
+
     if (cachedItems) {
       const itemList = JSON.parse(cachedItems)
       res.status(200).json({ itemList })
@@ -17,9 +19,10 @@ exports.getItems = async (req, res, next) => {
     }
 
     const itemList = await Item.find({})
+
     await redisClient.set(`itemList/:userId`, JSON.stringify(itemList), { expiration: { type: 'EX', value: 5 * 60 } })
     res.status(200).json({ itemList })
-    return;
+
   } catch (err) {
     next(err)
   }
@@ -81,7 +84,14 @@ exports.upgradeLevelStatus = async (req, res, next) => { // Upgrades the status 
       }
 
       const timer = setTimeout(async () => { // Once the timer ends, it saves the changes to the database and removes the user from request queue.
-        await dataBaseSave(Item, "upgradeLevelStatus", cardId, updatedEnergy, updatedStatus, updatedItems)
+        await dataBaseSave({
+          database: Item,
+          action: "upgradeLevelStatus",
+          cardId,
+          updatedEnergy,
+          updatedStatus,
+          updatedItems
+        })
         userRequestList.delete(`userId`)
         userRequestList.delete(`itemList/:userId`)
       }, 2000)
@@ -125,6 +135,7 @@ exports.upgradeLevelStatus = async (req, res, next) => { // Upgrades the status 
 exports.updateLevel = async (req, res, next) => { // Updates the level of the item.
   const { cardId } = req.body
   const isActive = req.isActive
+
   try {
     const cachedItems = await redisClient.get(`itemList/:userId`)
 
@@ -148,7 +159,6 @@ exports.updateLevel = async (req, res, next) => { // Updates the level of the it
         foundItem.levelStatus = 0
       }
       await redisClient.set(`itemList/:userId`, JSON.stringify(itemList), { expiration: { type: 'EX', value: 5 * 60 } })
-
       await redisClient.set(`isActive/:userId`, 'true', { expiration: { type: 'EX', value: 1 * 60 } })
       // Updating the cache and shows that the user sent a request within the 2 seconds.
 
@@ -160,8 +170,13 @@ exports.updateLevel = async (req, res, next) => { // Updates the level of the it
       if (isActive) clearTimeout(userRequestList.get(`userId`))
 
       const timer = setTimeout(async () => { // Once the timer ends, it saves the changes to the database and removes the user from request queue.
-        await dataBaseSave(Item, "updateLevel", cardId)
+        await dataBaseSave({
+          database: Item,
+          action: "updateLevel",
+          cardId: cardId
+        })
         userRequestList.delete(`userId`)
+        userRequestList.delete(`itemList/:userId`)
       }, 2000)
 
       userRequestList.set(`userId`, timer)
@@ -238,7 +253,12 @@ exports.instantLevel = async (req, res, next) => { // Updates the level instantl
       if (isActive) clearTimeout(userRequestList.get(`userId`))
 
       const timer = setTimeout(async () => { // Once the timer ends, it saves the changes to the database and removes the user from request queue.
-        await dataBaseSave(Item, "instantUpdate", cardId, cachedEnergy)
+        await dataBaseSave({
+          database: Item,
+          action: "instantUpdate",
+          cardId,
+          cachedEnergy
+        })
         userRequestList.delete(`userId`)
       }, 2000)
       userRequestList.set(`userId`, timer)

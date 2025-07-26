@@ -5,13 +5,14 @@ exports.getEnergy = async (req, res, next) => {
 
   try {
     const cachedItems = await redisClient.get(`energy/:userId`)
+
     if (cachedItems) { // If it is cached, updates the energy with the calculation of timestamps. 
       const energy = JSON.parse(cachedItems)
       const now = dayjs();
       const lastUpdate = dayjs.unix(energy.lastUpdateStamp);
 
       const elapsedMinutes = now.diff(lastUpdate, "minute");
-      const energyToAdd = Math.floor(elapsedMinutes / 2);
+      const energyToAdd = Math.floor(elapsedMinutes / 2); // Elapsed Minutes will be added into the energy so if the user even leaves, it will be added, max 100.
 
       let updatedEnergy = energy.energy;
 

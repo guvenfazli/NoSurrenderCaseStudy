@@ -1,4 +1,4 @@
-async function instantUpdate(database, cardId) { // This is saving the changes to the database once the timeout ends.
+async function instantUpdate({ database, cardId }) { // This is saving the changes to the database once the timeout ends.
   try {
     const itemList = await database.find({})
 
