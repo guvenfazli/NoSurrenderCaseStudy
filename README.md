@@ -121,6 +121,50 @@ Two Redis patterns implemented:
 
 ---
 
+## ✅ Test Coverage & Code Quality
+
+To ensure backend reliability and performance under edge conditions, I implemented a focused test suite using:
+
+- 🧪 **Mocha** – Test runner  
+- 🔍 **Chai** – Assertions  
+- 🧰 **Sinon** – Mocks for Redis and DB  
+- 🌐 **Supertest** – API endpoint testing and rate-limit validation  
+
+### 🔬 Key Scenarios Covered
+
+| Area                        | Tested? |
+|----------------------------|---------|
+| Energy validation (cache)  | ✅      |
+| Fallback to DB             | ✅      |
+| Max-level item protection  | ✅      |
+| API Rate Limiting          | ✅      |
+
+---
+
+### 🧪 Sample Test Cases
+
+- Throws `"Yeterli enerjin yok!"` when energy in Redis is insufficient  
+- Simulates **30+ requests in 2 seconds** to verify rate-limiting  
+- Checks that max-level items cannot be leveled up  
+- Validates successful fallback when Redis returns null  
+- Ensures that latest item progress is written (not intermediate ones)
+
+📸 _Test Snapshots_  
+![Snapshot 1](client/readmeImages/totalTests1.PNG)  
+![Snapshot 2](client/readmeImages/totalTests2.PNG)
+
+### 🧠 Test Insights
+
+- Each function tested with **mocked external dependencies** (Redis, MongoDB)  
+- Test assertions go beyond status codes — they **verify error messages and side-effects**  
+- Used **Sinon timers** to simulate time-based logic (debounce/rate-limit)
+
+### 🚀 Run Tests
+
+```bash
+cd server
+npm run test
+```
 ## 💡 Result
 
 With this solution:
