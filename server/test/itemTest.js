@@ -5,8 +5,9 @@ const Energy = require('../models/energy')
 const Item = require('../models/items')
 const redisClient = require('../utils/redis')
 const energyCheck = require('../utils/energyCheck')
+const instantEnergy = require('../utils/instantEnergy')
 
-describe('Item Process Update Unit Tests', () => {
+describe('Checks the Energy', () => {
   beforeEach(() => {
     sinon.stub(redisClient, 'get')
     sinon.stub(redisClient, 'set')
@@ -170,7 +171,6 @@ describe('Checks the Item before Leveling Up', () => {
 
   afterEach(() => {
     sinon.restore();
-
   });
 
   it('Should throw an error if the item from the cache is not found', async () => {
@@ -240,4 +240,48 @@ describe('Checks the Item before Leveling Up', () => {
   })
 
 
+})
+
+describe('Checks the Item before Instant Level Up', () => {
+  let req, res, next;
+
+  beforeEach(() => {
+    sinon.stub(redisClient, 'get');
+    sinon.stub(redisClient, 'set');
+    sinon.stub(Item, 'find');
+    sinon.stub(Energy, 'find');
+    sinon.stub(Energy, 'findOne');
+    req = {
+      body: {
+        cardId: "68803f0f29d97e6892a3c6df",
+        requiredEnergy: 40
+      },
+      isActive: false
+    };
+    res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub()
+    };
+    next = sinon.stub();
+  });
+
+  afterEach(() => {
+    sinon.restore();
+  });
+
+  it('Should throw an error if the energy from cache is not enough', async () => {
+    redisClient.get.resolves(JSON.stringify({
+      energy: 20,
+      lastUpdateStamp: 123456789
+    }));
+    const result = await instantEnergy(req.body.requiredEnergy);
+    expect(result).to.equal(false);
+  })
+  it('Should throw an error if the energy from DB is not enough', async () => {
+    redisClient.get.resolves(null);
+    Energy.find.resolves([{ energy: 20 }])
+    const result = await instantEnergy(req.body.requiredEnergy);
+    expect(result).to.equal(false);
+  })
+  
 })

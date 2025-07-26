@@ -3,6 +3,7 @@ const redisClient = require('../utils/redis')
 const dayjs = require('dayjs')
 
 async function energyCheck(requiredEnergy) {
+
   try {
     const cachedValue = await redisClient.get('energy/:userId')
 
