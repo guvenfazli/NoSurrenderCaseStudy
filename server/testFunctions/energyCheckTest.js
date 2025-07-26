@@ -20,15 +20,15 @@ async function energyCheck() {
       return updatedEnergy
 
     } else {
-      const energy = await Energy.find({})
-
-      if (energy[0].energy < 1) {
+      const energy = await Energy.findOne({ _id: "688062edebdc5643620fccd6" })
+ 
+      if (energy.energy < 1) {
         const error = new Error()
         error.message = "Yeterli enerjin yok!"
         throw error
       }
 
-      const updatedEnergy = energy[0].energy - 1
+      const updatedEnergy = energy.energy - 1
       await redisClient.set(`energy/:userId`, JSON.stringify({ energy: updatedEnergy, lastUpdateStamp: energy.lastUpdateStamp }), { expiration: { type: 'EX', value: 5 * 60 } })
       return updatedEnergy
     }

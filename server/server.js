@@ -7,7 +7,7 @@ const redisClient = require('./utils/redis')
 const { rateLimit } = require('express-rate-limit') // Using Express Rate Limit Package in order to block spams/ddos attacks.
 // ROUTES
 const itemLimiter = rateLimit({
-  windowMs: 2 * 1000, 
+  windowMs: 2 * 1000,
   limit: 30,          // Max 30 requests in 2 seconds.
   message: "TOO MANY REQUEST",
   standardHeaders: true,
@@ -42,9 +42,12 @@ app.use((req, res, next) => { // Header Options
 // REDIS SETUP
 
 async function createRedis() {
-  redisClient.on('error', err => console.log('Redis Client Error', err))
-  await redisClient.connect()
-  console.log('Redis connection established.')
+  try {
+    await redisClient.connect()
+    console.log('Redis connection established.');
+  } catch (err) {
+    console.log('Redis Client Error', err);
+  }
 }
 
 createRedis()

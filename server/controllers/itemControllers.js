@@ -90,6 +90,7 @@ exports.upgradeLevelStatus = async (req, res, next) => { // Upgrades the status 
       userRequestList.set(`userId`, timer)
       userRequestList.set(`itemList/:userId`, updatedItems ? updatedItems : [{ cardId, updatedStatus }])
       res.status(200).json({ progress: foundItem.levelStatus, energy: updatedEnergy })
+      return;
     }
 
 

@@ -110,11 +110,6 @@ describe('Checks the Item before doing any process', () => {
     await itemController.upgradeLevelStatus(req, res, next);
   })
 
-
-
-
-  //////////
-
   it('Should throw an error if the item from the DB is not found', async () => {
     redisClient.get.resolves(JSON.stringify({ energy: 100, lastUpdateStamp: 12345 }))
     await energyCheck()
