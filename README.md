@@ -24,6 +24,8 @@ But since I was told that running the app locally and providing a repository wou
 For simulation purposes, I used a general userId tag throughout the code.
 In a real production environment, this would be dynamically replaced with the authenticated user’s unique identifier.
 
+> **One Final Note:** I built the routes in two different rount and did not use the /api root, because in the e-mail i had it says, if i could came up with different design, i can do it.  
+
 ---
 
 ## 🧩 Task Summary
